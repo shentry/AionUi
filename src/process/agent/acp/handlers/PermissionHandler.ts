@@ -1,6 +1,9 @@
 import { uuid } from '@/common/utils';
 import type { AcpPermissionRequest } from '@/common/types/acpTypes';
+import type { PermissionOptionKind } from '@agentclientprotocol/sdk';
 import { AcpApprovalStore, createAcpApprovalKey } from '../ApprovalStore';
+
+const ALLOW_ALWAYS: PermissionOptionKind = 'allow_always';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -68,7 +71,7 @@ export class PermissionHandler {
       // Check cached "always allow"
       const approvalKey = createAcpApprovalKey(data.toolCall);
       if (this.approvalStore.isApprovedForSession(approvalKey)) {
-        resolve({ optionId: 'allow_always' });
+        resolve({ optionId: ALLOW_ALWAYS });
         return;
       }
 
@@ -122,12 +125,12 @@ export class PermissionHandler {
     this.pendingPermissions.delete(callId);
 
     // Cache "always allow" decisions
-    if (optionId === 'allow_always') {
+    if (optionId === ALLOW_ALWAYS) {
       const meta = this.requestMeta.get(callId);
       if (meta) {
         this.approvalStore.put(
           createAcpApprovalKey({ kind: meta.kind, title: meta.title, rawInput: meta.rawInput }),
-          'allow_always'
+          ALLOW_ALWAYS
         );
       }
     }

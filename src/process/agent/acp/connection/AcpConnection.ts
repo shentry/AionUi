@@ -18,6 +18,7 @@ import {
   PROTOCOL_VERSION,
 } from '@agentclientprotocol/sdk';
 import type { AcpBackend, AcpSessionConfigOption, AcpSessionModels } from '@/common/types/acpTypes';
+import type { SessionConfigOptionCategory } from '@agentclientprotocol/sdk';
 import type { AcpSessionMcpServer } from '../config/mcpSessionConfig';
 import { createNdJsonMessageStream, createTappedStream, requireAgentStdio, isChildProcessRunning } from '../core';
 import { ResettableTimer } from './ResettableTimer';
@@ -319,7 +320,7 @@ export class AcpConnection {
     }
     if (this.configOptions) {
       this.configOptions = this.configOptions.map((opt) =>
-        opt.category === 'model' ? { ...opt, currentValue: modelId, selectedValue: modelId } : opt
+        opt.category === ('model' satisfies SessionConfigOptionCategory) ? { ...opt, currentValue: modelId, selectedValue: modelId } : opt
       );
     }
   }
@@ -404,9 +405,8 @@ export class AcpConnection {
   }
 
   private handleConfigOptionUpdate(params: SessionNotification): void {
-    const update = params.update as Record<string, unknown> | undefined;
-    if (update?.sessionUpdate === 'config_option_update') {
-      const payload = update as { configOptions?: AcpSessionConfigOption[] };
+    if (params.update.sessionUpdate === 'config_option_update') {
+      const payload = params.update as unknown as { configOptions?: AcpSessionConfigOption[] };
       if (Array.isArray(payload.configOptions)) {
         this.configOptions = payload.configOptions;
       }

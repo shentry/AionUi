@@ -1,4 +1,4 @@
-import type { AnyMessage, SessionNotification } from '@agentclientprotocol/sdk';
+import { CLIENT_METHODS, type AnyMessage, type SessionNotification } from '@agentclientprotocol/sdk';
 
 type JsonRpcId = string | number | null;
 
@@ -74,7 +74,7 @@ export function isJsonRpcNotification(message: AnyMessage): boolean {
 }
 
 export function isSessionUpdateNotification(message: AnyMessage): boolean {
-  return isJsonRpcNotification(message) && (message as { method?: unknown }).method === 'session/update';
+  return isJsonRpcNotification(message) && (message as { method?: unknown }).method === CLIENT_METHODS.session_update;
 }
 
 export function extractSessionUpdateNotification(message: AnyMessage): SessionNotification | undefined {

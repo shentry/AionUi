@@ -1,12 +1,17 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { CLIENT_METHODS } from '@agentclientprotocol/sdk';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
+export type FileOperationMethod =
+  | typeof CLIENT_METHODS.fs_read_text_file
+  | typeof CLIENT_METHODS.fs_write_text_file;
+
 export type FileOperationEvent = {
-  method: 'fs/read_text_file' | 'fs/write_text_file';
+  method: FileOperationMethod;
   path: string;
   content?: string;
   sessionId: string;
@@ -47,7 +52,7 @@ export class FileHandler {
   async readTextFile(params: { path: string; sessionId?: string }): Promise<{ content: string }> {
     const resolved = this.resolveWorkspacePath(params.path);
     this.onFileOperation?.({
-      method: 'fs/read_text_file',
+      method: CLIENT_METHODS.fs_read_text_file,
       path: resolved,
       sessionId: params.sessionId || '',
     });
@@ -64,7 +69,7 @@ export class FileHandler {
   async writeTextFile(params: { path: string; content: string; sessionId?: string }): Promise<null> {
     const resolved = this.resolveWorkspacePath(params.path);
     this.onFileOperation?.({
-      method: 'fs/write_text_file',
+      method: CLIENT_METHODS.fs_write_text_file,
       path: resolved,
       content: params.content,
       sessionId: params.sessionId || '',

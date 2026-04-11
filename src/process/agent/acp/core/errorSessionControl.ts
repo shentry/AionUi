@@ -1,3 +1,4 @@
+import { AGENT_METHODS } from '@agentclientprotocol/sdk';
 import { extractAcpError } from './errorShapes';
 
 const SESSION_CONTROL_UNSUPPORTED_ACP_CODES = new Set([-32601, -32602]);
@@ -30,8 +31,13 @@ export function formatSessionControlAcpSummary(acp: { code: number; message: str
   return `${acp.message} (ACP ${acp.code})`;
 }
 
+export type SessionControlMethod =
+  | typeof AGENT_METHODS.session_set_mode
+  | typeof AGENT_METHODS.session_set_config_option
+  | typeof AGENT_METHODS.session_set_model;
+
 export function maybeWrapSessionControlError(
-  method: 'session/set_mode' | 'session/set_config_option' | 'session/set_model',
+  method: SessionControlMethod,
   error: unknown,
   context?: string
 ): unknown {

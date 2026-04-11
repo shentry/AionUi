@@ -1,5 +1,9 @@
 import type { AcpModelInfo, AcpSessionConfigOption, AcpSessionModels } from '@/common/types/acpTypes';
+import type { SessionConfigOptionCategory } from '@agentclientprotocol/sdk';
 import { buildAcpModelInfo } from '../config/modelInfo';
+
+const MODEL_CATEGORY: SessionConfigOptionCategory = 'model';
+const MODE_CATEGORY: SessionConfigOptionCategory = 'mode';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -62,7 +66,7 @@ export class ModelManager {
   getConfigOptions(connection: ModelManagerConnection): AcpSessionConfigOption[] {
     const all = connection.getConfigOptions();
     if (!all) return [];
-    return all.filter((opt) => opt.category !== 'model' && opt.category !== 'mode');
+    return all.filter((opt) => opt.category !== MODEL_CATEGORY && opt.category !== MODE_CATEGORY);
   }
 
   /** Set a config option value (e.g. reasoning effort). */

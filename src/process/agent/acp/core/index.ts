@@ -48,3 +48,4 @@ export type { AcpMessageStream, NdJsonStreamOptions, MessageObserver } from './t
 
 // Session control errors
 export { formatSessionControlAcpSummary, maybeWrapSessionControlError } from './errorSessionControl';
+export type { SessionControlMethod } from './errorSessionControl';
